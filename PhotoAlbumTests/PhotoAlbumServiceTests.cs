@@ -72,7 +72,7 @@ public class PhotoAlbumServiceTests
             },
         };
 
-        _photoAlbumRepo.Setup(x => x.GetAll()).Returns(photoAlbums);
+        _photoAlbumRepo.Setup(x => x.GetAll()).ReturnsAsync(photoAlbums);
         
         _photoAlbumService.Run();
         

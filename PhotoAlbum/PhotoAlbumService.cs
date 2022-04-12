@@ -4,7 +4,7 @@ namespace PhotoAlbum;
 
 public interface IPhotoAlbumService
 {
-    void Run();
+    Task Run();
 }
 
 public class PhotoAlbumService : IPhotoAlbumService
@@ -20,11 +20,11 @@ public class PhotoAlbumService : IPhotoAlbumService
         _logger = logger;
     }
 
-    public void Run()
+    public async Task Run()
     {
         var request = _photoAlbumInterface.GetUserInput();
         _logger.LogInformation("User has requested album Id: {albumId}", request.AlbumId);
-        var photoAlbums = request.AlbumId.HasValue ? _photoAlbumRepo.GetByAlbumId((int)request.AlbumId) : _photoAlbumRepo.GetAll();
+        var photoAlbums = request.AlbumId.HasValue ? await _photoAlbumRepo.GetByAlbumId((int)request.AlbumId) : await _photoAlbumRepo.GetAll();
         _photoAlbumInterface.DisplayPhotoAlbums(photoAlbums);
     }
 }

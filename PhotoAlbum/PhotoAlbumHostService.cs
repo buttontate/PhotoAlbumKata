@@ -18,14 +18,14 @@ public class PhotoAlbumHostService : IHostedService
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("1. StartAsync has been called.");
-        Task.Run(() =>
+        _logger.LogInformation("Starting photo album.");
+        Task.Run(async () =>
         {
             while (!cancellationToken.IsCancellationRequested)
             {
                 try
                 {
-                    _photoAlbumService.Run();
+                    await _photoAlbumService.Run();
                 }
                 catch (Exception e)
                 {
@@ -40,7 +40,7 @@ public class PhotoAlbumHostService : IHostedService
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Exiting Photo Album.");
+        _logger.LogInformation("Exiting photo album");
 
         return Task.CompletedTask;
     }

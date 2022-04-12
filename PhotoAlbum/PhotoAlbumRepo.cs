@@ -1,20 +1,37 @@
+using System.Net.Http.Json;
+using System.Text.Json;
+
 namespace PhotoAlbum;
 
 public interface IPhotoAlbumRepo
 {
-    IEnumerable<PhotoAlbumResponse> GetAll();
-    IEnumerable<PhotoAlbumResponse> GetByAlbumId(int albumId);
+    Task<IEnumerable<PhotoAlbumResponse>> GetAll();
+    Task<IEnumerable<PhotoAlbumResponse>> GetByAlbumId(int albumId);
 }
 
 public class PhotoAlbumRepo : IPhotoAlbumRepo
 {
-    public IEnumerable<PhotoAlbumResponse> GetAll()
+    private readonly HttpClient _httpClient;
+    private readonly AppSettings _appSettings;
+
+    public PhotoAlbumRepo(HttpClient httpClient, AppSettings appSettings)
     {
-        throw new NotImplementedException();
+        _httpClient = httpClient;
+        _appSettings = appSettings;
+    }
+    public async Task<IEnumerable<PhotoAlbumResponse>> GetAll()
+    {
+        var response = await _httpClient.GetAsync(_appSettings.PhotoAlbumServiceUrl);
+        var result = JsonSerializer.Deserialize<IEnumerable<PhotoAlbumResponse>>(await response.Content.ReadAsStringAsync());
+        return result;
     }
 
-    public IEnumerable<PhotoAlbumResponse> GetByAlbumId(int albumId)
+    public async Task<IEnumerable<PhotoAlbumResponse>>  GetByAlbumId(int albumId)
     {
-        throw new NotImplementedException();
+        var url = $"{_appSettings.PhotoAlbumServiceUrl}?albumId={albumId}";
+        var response = await _httpClient.GetAsync(url);
+        var result = await response.Content.ReadFromJsonAsync<IEnumerable<PhotoAlbumResponse>>();
+        
+        return result;
     }
 }

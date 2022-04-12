@@ -2,7 +2,7 @@ namespace PhotoAlbum;
 
 public static class PhotoAlbumInterfaceConstants
 {
-    public static string DisplayRequest = "enter album Id to request or enter for all";
+    public static string DisplayRequest = "Please enter the album Id you wish to retrieve.  Leave blank to retrieve all.";
 
     public static string DisplayAlbum(PhotoAlbumResponse albumResponse)
     {
@@ -12,6 +12,6 @@ public static class PhotoAlbumInterfaceConstants
 
     public static string DisplayBadRequest(string albumRequest)
     {
-        return $"album {albumRequest} is not valid";
+        return $"Album {albumRequest} is not valid.";
     }
 }

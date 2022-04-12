@@ -1,5 +1,5 @@
 using System;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 using FluentAssertions;
 using Moq;
 using PhotoAlbum;
@@ -23,7 +23,7 @@ public class PhotoAlbumInterfaceTests
     public void ShouldGetAlbumRequestFromConsole()
     {
         _photoAlbumInterface.GetUserInput();
-        _consoleWrapper.Verify(x => x.DisplayLine(PhotoAlbumInterfaceConstants.DisplayRequest));
+        _consoleWrapper.Verify(x => x.DisplayLine("Please enter the album Id you wish to retrieve.  Leave blank to retrieve all."));
     }
     
     [Fact]
@@ -57,7 +57,35 @@ public class PhotoAlbumInterfaceTests
         var func = () =>  _photoAlbumInterface.GetUserInput();
         
         func.Should().Throw<Exception>(PhotoAlbumInterfaceConstants.DisplayBadRequest(enteredAlbum));
-        _consoleWrapper.Verify(x => x.DisplayLine(PhotoAlbumInterfaceConstants.DisplayBadRequest(enteredAlbum)));
+        _consoleWrapper.Verify(x => x.DisplayLine($"Album {enteredAlbum} is not valid."));
     }
-    
+
+    [Fact]
+    public void GivenAlbumShouldDisplayAlbum()
+    {
+        var photoAlbums = new List<PhotoAlbumResponse>()
+        {
+            new()
+            {
+                AlbumId = 1,
+                Id = 1,
+                ThumbnailUrl = "thumbnailUrl2",
+                Title = "Title",
+                Url = "url2"
+            },
+            new()
+            {
+                AlbumId = 1,
+                Id = 2,
+                ThumbnailUrl = "thumbnailUrl2",
+                Title = "Title",
+                Url = "url2"
+            }
+        };
+        _photoAlbumInterface.DisplayPhotoAlbums(photoAlbums);
+        foreach (var album in photoAlbums)
+        {
+            _consoleWrapper.Verify(x => x.DisplayLine($"AlbumId: {album.AlbumId}| Id: {album.Id}| Url: {album.Url}| ThumbnailUrl: {album.ThumbnailUrl}"));
+        }
+    }
 }
