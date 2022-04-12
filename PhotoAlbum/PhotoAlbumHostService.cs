@@ -23,7 +23,15 @@ public class PhotoAlbumHostService : IHostedService
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                _photoAlbumService.Run();
+                try
+                {
+                    _photoAlbumService.Run();
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e, e.Message);
+                }
+                
             }
         }, cancellationToken);
 

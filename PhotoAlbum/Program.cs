@@ -11,6 +11,7 @@ IHostBuilder CreateHostBuilder(string[] args) =>
             services.AddSingleton<IPhotoAlbumService, PhotoAlbumService>();
             services.AddSingleton<IPhotoAlbumInterface, PhotoAlbumInterface>();
             services.AddSingleton<IPhotoAlbumRepo, PhotoAlbumRepo>();
+            services.AddSingleton<IConsoleWrapper, ConsoleWrapper>();
             services.AddHostedService<PhotoAlbumHostService>();
             services.AddLogging();
         });
