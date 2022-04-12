@@ -14,6 +14,11 @@ public class PhotoAlbumRepo : IPhotoAlbumRepo
     private readonly HttpClient _httpClient;
     private readonly AppSettings _appSettings;
 
+    private static JsonSerializerOptions JsonSerializerOptions => new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
     public PhotoAlbumRepo(HttpClient httpClient, AppSettings appSettings)
     {
         _httpClient = httpClient;
@@ -22,7 +27,7 @@ public class PhotoAlbumRepo : IPhotoAlbumRepo
     public async Task<IEnumerable<PhotoAlbumResponse>> GetAll()
     {
         var response = await _httpClient.GetAsync(_appSettings.PhotoAlbumServiceUrl);
-        var result = JsonSerializer.Deserialize<IEnumerable<PhotoAlbumResponse>>(await response.Content.ReadAsStringAsync());
+        var result = await response.Content.ReadFromJsonAsync<IEnumerable<PhotoAlbumResponse>>(JsonSerializerOptions);
         return result;
     }
 
@@ -30,8 +35,7 @@ public class PhotoAlbumRepo : IPhotoAlbumRepo
     {
         var url = $"{_appSettings.PhotoAlbumServiceUrl}?albumId={albumId}";
         var response = await _httpClient.GetAsync(url);
-        var result = await response.Content.ReadFromJsonAsync<IEnumerable<PhotoAlbumResponse>>();
-        
+        var result = await response.Content.ReadFromJsonAsync<IEnumerable<PhotoAlbumResponse>>(JsonSerializerOptions);
         return result;
     }
 }
